@@ -1,35 +1,20 @@
 require("rootpath")();
-const express = require("express");
-const path = require("path");
-const favicon = require("serve-favicon");
-const logger = require("morgan");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+require("dotenv").config();
 
-const jwt = require("./_helpers/jwt");
-const errorHandler = require("./_helpers/error-handler");
+const jwt = require("./middleware/jwt");
+const errorHandler = require("./middleware/error-handler");
+const initialize = require("./init");
 
-mongoose.connect("mongodb://localhost/events", { useNewUrlParser: true });
+const app = initialize();
 
-const app = express();
-
-// default value for title local
-app.locals.title = "Express - Generated with IronGenerator";
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
 // use JWT auth to secure the api
 app.use(jwt());
 
-// api routes
-app.use("/users", require("./users/users.controller"));
-
 // global error handler
 app.use(errorHandler);
+
+// api routes
+app.use("/users", require("./routes/auth"));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -38,20 +23,9 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
-});
-
 // start server
 const port = process.env.NODE_ENV === "production" ? 80 : 4000;
-const server = app.listen(port, function () {
+app.listen(port, function () {
   console.log("Server listening on port " + port);
 });
 
