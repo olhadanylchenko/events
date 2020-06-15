@@ -1,15 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-const eventSchema = new Schema({
-  host: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    refPath: "hostModel",
-  },
-  hostModel: {
-    enum: ["User", "Organisation"],
-  },
+const organisationSchema = new Schema({
+  admins: [{ type: Schema.Types.ObjectId, ref: "User" }],
   title: {
     type: String,
     required: true,
@@ -20,18 +13,13 @@ const eventSchema = new Schema({
     default:
       "https://res.cloudinary.com/artistree/image/upload/v1590111521/artistree/defaultimage2_t4vr0n.png",
   },
-  attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  members: [{ type: Schema.Types.ObjectId, ref: "User" }],
   categories: [String],
-  startDate: {
-    type: Date,
-    required: true,
-  },
-  endDate: Date,
   privateOrPublic: {
     type: String,
     enum: ["public", "private"],
   },
 });
 
-const Event = model("Event", eventSchema);
-module.exports = Event;
+const Organisation = model("Organisation", organisationSchema);
+module.exports = Organisation;
