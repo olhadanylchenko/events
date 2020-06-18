@@ -4,7 +4,10 @@ require("dotenv").config();
 const jwt = require("./middleware/jwt");
 const errorHandler = require("./middleware/error-handler");
 const initialize = require("./init");
+
+const users = require("./routes/auth");
 const friendships = require("./routes/friendships");
+const events = require("./routes/events");
 
 const app = initialize();
 
@@ -15,8 +18,9 @@ app.use(jwt());
 app.use(errorHandler);
 
 // api routes
-app.use("/users", require("./routes/auth"));
+app.use("/users", users);
 app.use("/friendships", friendships);
+app.use("/events", events);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
