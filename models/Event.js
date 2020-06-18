@@ -27,7 +27,7 @@ const eventSchema = new Schema({
     required: true,
   },
   endDate: Date,
-  privateOrPublic: {
+  visibity: {
     type: String,
     enum: ["public", "private"],
   },

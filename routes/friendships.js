@@ -27,7 +27,7 @@ router.delete("/:id", async function (req, res) {
     await Friendship.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "ok" });
   } catch (err) {
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
