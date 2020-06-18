@@ -44,7 +44,7 @@ async function getAll(req, res, next) {
 
 async function getCurrent(req, res, next) {
   try {
-    const user = await userService.getById(req.user.id);
+    const user = await userService.getById(req.user._id);
     user ? res.json(user) : res.sendStatus(404);
   } catch (err) {
     next(err);

@@ -47,9 +47,9 @@ router.get("/", async (req, res) => {
 router.get("/mine", async (req, res) => {
   try {
     const event = await Event.find({
-      $or: [{ attendees: req.user.id }, { host: req.user.id }],
+      $or: [{ attendees: req.user._id }, { host: req.user._id }],
     });
-    console.log(event, req.user.id);
+    console.log(event, req.user._id);
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json(err);
@@ -92,6 +92,20 @@ router.put("/:id", async (req, res) => {
     res.status(200).json(event);
   } catch (err) {
     json(err);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (event.host === req.user._id) {
+      await Event.findByIdAndDelete(req.params.id);
+      res.status(200).json({ message: "ok" });
+    } else {
+      res.status(403).json({ message: "unauthorized" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
