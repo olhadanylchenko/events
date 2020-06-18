@@ -13,55 +13,67 @@ router.delete("/:id", _delete);
 
 module.exports = router;
 
-function authenticate(req, res, next) {
-  userService
-    .authenticate(req.body)
-    .then((user) =>
-      user
-        ? res.json(user)
-        : res.status(400).json({ message: "Email or password is incorrect" })
-    )
-    .catch((err) => next(err));
+async function authenticate(req, res, next) {
+  try {
+    const user = await userService.authenticate(req.body);
+    user
+      ? res.json(user)
+      : res.status(400).json({ message: "Email or password is incorrect" });
+  } catch (err) {
+    next(err);
+  }
 }
 
-function register(req, res, next) {
-  userService
-    .create(req.body)
-    .then((user) => res.json(user))
-    .catch((err) => next(err));
+async function register(req, res, next) {
+  try {
+    const user = await userService.create(req.body);
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
 }
 
-function getAll(req, res, next) {
-  userService
-    .getAll()
-    .then((users) => res.json(users))
-    .catch((err) => next(err));
+async function getAll(req, res, next) {
+  try {
+    const users = await userService.getAll();
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
 }
 
-function getCurrent(req, res, next) {
-  userService
-    .getById(req.user.id)
-    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
-    .catch((err) => next(err));
+async function getCurrent(req, res, next) {
+  try {
+    const user = await userService.getById(req.user.id);
+    user ? res.json(user) : res.sendStatus(404);
+  } catch (err) {
+    next(err);
+  }
 }
 
-function getById(req, res, next) {
-  userService
-    .getById(req.params.id)
-    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
-    .catch((err) => next(err));
+async function getById(req, res, next) {
+  try {
+    const user = await userService.getById(req.params.id);
+    user ? res.json(user) : res.sendStatus(404);
+  } catch (err) {
+    next(err);
+  }
 }
 
-function update(req, res, next) {
-  userService
-    .update(req.params.id, req.body)
-    .then(() => res.json({}))
-    .catch((err) => next(err));
+async function update(req, res, next) {
+  try {
+    await userService.update(req.params.id, req.body);
+    res.json({});
+  } catch (err) {
+    next(err);
+  }
 }
 
-function _delete(req, res, next) {
-  userService
-    .delete(req.params.id)
-    .then(() => res.json({}))
-    .catch((err) => next(err));
+async function _delete(req, res, next) {
+  try {
+    await userService.delete(req.params.id);
+    res.json({});
+  } catch (err) {
+    next(err);
+  }
 }
