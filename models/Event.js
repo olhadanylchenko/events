@@ -2,7 +2,14 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const eventSchema = new Schema({
-  host: { type: Schema.Types.ObjectId, ref: "User" },
+  host: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    refPath: "hostModel",
+  },
+  hostModel: {
+    enum: ["User", "Organisation"],
+  },
   title: {
     type: String,
     required: true,
@@ -20,9 +27,9 @@ const eventSchema = new Schema({
     required: true,
   },
   endDate: Date,
-  privateOrPublic: {
+  visibity: {
     type: String,
-    enum: ["Public", "Private"],
+    enum: ["public", "private"],
   },
 });
 
