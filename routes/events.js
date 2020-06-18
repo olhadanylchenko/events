@@ -6,7 +6,7 @@ const Organisation = require("../models/Organisation");
 const Event = require("../models/Event");
 const Friendship = require("../models/Friendship");
 
-router.post("/", async function (req, res) {
+router.post("/", async (req, res) => {
   const {
     host,
     title,
@@ -35,7 +35,7 @@ router.post("/", async function (req, res) {
   }
 });
 
-router.get("/", async function (req, res) {
+router.get("/", async (req, res) => {
   try {
     const event = await Event.find();
     res.status(200).json(event);
@@ -44,7 +44,7 @@ router.get("/", async function (req, res) {
   }
 });
 
-router.get("/mine", async function (req, res) {
+router.get("/mine", async (req, res) => {
   try {
     const event = await Event.find({
       $or: [{ attendees: req.user.id }, { host: req.user.id }],
@@ -53,6 +53,45 @@ router.get("/mine", async function (req, res) {
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json(err);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    res.status(200).json(event);
+  } catch (err) {
+    json(err);
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      categories,
+      startDate,
+      endDate,
+      visibility,
+      attendees,
+    } = req.body;
+    const event = await Event.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        categories,
+        startDate,
+        endDate,
+        visibility,
+        attendees,
+      },
+      { new: true }
+    );
+    res.status(200).json(event);
+  } catch (err) {
+    json(err);
   }
 });
 
