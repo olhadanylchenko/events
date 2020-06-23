@@ -15,6 +15,16 @@ router.get("/", async function (req, res) {
 
 router.post("/:id", async function (req, res) {
   try {
+    if (
+      await Friendship.findOne({
+        $or: [
+          { friend1: req.user._id, friend2: req.params.id },
+          { friend1: req.params.id, friend2: req.user._id },
+        ],
+      })
+    ) {
+      throw "Already friends";
+    }
     const friendship = await Friendship.create({
       friend1: req.user._id,
       friend2: req.params.id,
