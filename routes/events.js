@@ -7,19 +7,19 @@ const Event = require("../models/Event");
 const Friendship = require("../models/Friendship");
 
 router.post("/", async (req, res) => {
-  const {
-    host,
-    title,
-    description,
-    categories,
-    startDate,
-    endDate,
-    visibility,
-    attendees,
-    location,
-    stream,
-  } = req.body;
   try {
+    const {
+      host,
+      title,
+      description,
+      categories,
+      startDate,
+      endDate,
+      visibility,
+      attendees,
+      location,
+      stream,
+    } = req.body;
     const event = await Event.create({
       host,
       title,
@@ -32,6 +32,8 @@ router.post("/", async (req, res) => {
       location,
       stream,
     });
+    console.log("made an event");
+
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json(err);
@@ -40,7 +42,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const event = await Event.find();
+    const event = await Event.find().populate("host").populate("attendees");
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json(err);
@@ -51,7 +53,9 @@ router.get("/mine", async (req, res) => {
   try {
     const event = await Event.find({
       $or: [{ attendees: req.user._id }, { host: req.user._id }],
-    });
+    })
+      .populate("host")
+      .populate("attendees");
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json(err);
@@ -60,7 +64,9 @@ router.get("/mine", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findById(req.params.id)
+      .populate("host")
+      .populate("attendees");
     res.status(200).json(event);
   } catch (err) {
     json(err);
