@@ -6,7 +6,10 @@ const Friendship = require("../models/Friendship");
 router.get("/", async function (req, res) {
   const friendship = await Friendship.find({
     $or: [{ friend1: req.user._id }, { friend2: req.user._id }],
-  });
+  })
+    .populate("friend1")
+    .populate("friend2");
+  console.log(friendship);
   res.json(friendship);
 });
 
