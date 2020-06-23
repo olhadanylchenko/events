@@ -9,10 +9,10 @@ const userCredentials = {
   password: "12345678",
 };
 
-describe("GET /events", function () {
+describe("GET /events/mine", function () {
   it("should require authorization", function (done) {
     request
-      .get("/events")
+      .get("/events/mine")
       .expect(401)
       .end(function (err, res) {
         if (err) return done(err);
@@ -25,8 +25,8 @@ describe("GET /events", function () {
 
   it("should respond with JSON array", function (done) {
     request
-      .get("/events")
-      .set("Authorization", "Bearer " + auth.token)
+      .get("/events/mine")
+      .auth(auth.token, { type: "bearer" })
       .expect(200)
       .expect("Content-Type", /json/)
       .end(function (err, res) {
@@ -36,6 +36,33 @@ describe("GET /events", function () {
       });
   });
 });
+// describe("PUT /events/:id", function () {
+//   it("should be a host", function (done) {
+//     request
+//       .put("/events/:id")
+//       .expect(401)
+//       .end(function (err, res) {
+//         if (err) return done(err);
+//         done();
+//       });
+//   });
+
+//   const auth = {};
+//   before(loginUser(auth));
+
+//   it("should respond with JSON", function (done) {
+//     request
+//       .get("/events/mine")
+//       .auth(auth.token, { type: "bearer" })
+//       .expect(200)
+//       .expect("Content-Type", /json/)
+//       .end(function (err, res) {
+//         if (err) return done(err);
+//         res.body.should.be.instanceof(Array);
+//         done();
+//       });
+//   });
+// });
 
 function loginUser(auth) {
   return function (done) {
@@ -47,7 +74,6 @@ function loginUser(auth) {
 
     function onResponse(err, res) {
       auth.token = res.body.token;
-      console.log(auth.token);
 
       return done();
     }

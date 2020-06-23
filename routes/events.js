@@ -20,6 +20,7 @@ router.post("/", async (req, res) => {
     stream,
   } = req.body;
   try {
+    console.log(req.body);
     const event = await Event.create({
       host,
       title,
@@ -52,7 +53,6 @@ router.get("/mine", async (req, res) => {
     const event = await Event.find({
       $or: [{ attendees: req.user._id }, { host: req.user._id }],
     });
-    console.log(event, req.user._id);
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json(err);
