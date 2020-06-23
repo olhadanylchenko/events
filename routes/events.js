@@ -20,7 +20,6 @@ router.post("/", async (req, res) => {
     stream,
   } = req.body;
   try {
-    console.log(req.body);
     const event = await Event.create({
       host,
       title,
