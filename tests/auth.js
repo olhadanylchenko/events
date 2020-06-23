@@ -5,7 +5,7 @@ var request = require("supertest")(app);
 const should = require("should");
 
 const userCredentials = {
-  email: "ll9kokoko@gmail.com",
+  email: "user-test1@gmail.com",
   password: "12345678",
 };
 
@@ -26,7 +26,7 @@ describe("GET /events/mine", function () {
   it("should respond with JSON array", function (done) {
     request
       .get("/events/mine")
-      .auth(auth.token, { type: "bearer" })
+      .set("Authorization", "Bearer " + auth.token)
       .expect(200)
       .expect("Content-Type", /json/)
       .end(function (err, res) {
@@ -36,33 +36,6 @@ describe("GET /events/mine", function () {
       });
   });
 });
-// describe("PUT /events/:id", function () {
-//   it("should be a host", function (done) {
-//     request
-//       .put("/events/:id")
-//       .expect(401)
-//       .end(function (err, res) {
-//         if (err) return done(err);
-//         done();
-//       });
-//   });
-
-//   const auth = {};
-//   before(loginUser(auth));
-
-//   it("should respond with JSON", function (done) {
-//     request
-//       .get("/events/mine")
-//       .auth(auth.token, { type: "bearer" })
-//       .expect(200)
-//       .expect("Content-Type", /json/)
-//       .end(function (err, res) {
-//         if (err) return done(err);
-//         res.body.should.be.instanceof(Array);
-//         done();
-//       });
-//   });
-// });
 
 function loginUser(auth) {
   return function (done) {
@@ -74,6 +47,7 @@ function loginUser(auth) {
 
     function onResponse(err, res) {
       auth.token = res.body.token;
+      console.log(auth);
 
       return done();
     }
