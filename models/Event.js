@@ -31,6 +31,11 @@ const eventSchema = new Schema({
     type: String,
     enum: ["public", "private"],
   },
+  stream: String,
+  location: {
+    type: String,
+    required: true,
+  },
 });
 
 const Event = model("Event", eventSchema);

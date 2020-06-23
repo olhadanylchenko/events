@@ -16,6 +16,8 @@ router.post("/", async (req, res) => {
     endDate,
     visibility,
     attendees,
+    location,
+    stream,
   } = req.body;
   try {
     const event = await Event.create({
@@ -27,8 +29,9 @@ router.post("/", async (req, res) => {
       endDate,
       visibility,
       attendees,
+      location,
+      stream,
     });
-    console.log("made an event");
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json(err);

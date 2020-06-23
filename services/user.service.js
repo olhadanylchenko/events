@@ -16,6 +16,8 @@ async function authenticate({ email, password }) {
   const user = await User.findOne({ email });
   if (user && bcrypt.compareSync(password, user.password)) {
     const token = jwt.sign({ _id: user.id }, process.env.SESSION_SECRET);
+    console.log(token);
+
     return {
       ...user.toJSON(),
       token,
@@ -40,7 +42,6 @@ async function create(userParam) {
   const user = await User.create({
     password: bcrypt.hashSync(userParam.password),
     email: userParam.email,
-    location: userParam.location,
     birthDate: userParam.birthDate,
   });
 
