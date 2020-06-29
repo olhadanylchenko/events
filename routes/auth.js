@@ -3,8 +3,8 @@ const router = express.Router();
 const userService = require("../services/user.service");
 
 // routes
-router.post("/authenticate", authenticate);
 router.post("/register", register);
+router.post("/authenticate", authenticate);
 router.get("/", getAll);
 router.get("/current", getCurrent);
 router.get("/:id", getById);
