@@ -8,14 +8,14 @@ const organisationSchema = new Schema({
     required: true,
   },
   description: String,
-  imageUrl: {
-    type: String,
-    default:
-      "https://res.cloudinary.com/artistree/image/upload/v1590111521/artistree/defaultimage2_t4vr0n.png",
-  },
+  // imageUrl: {
+  //   type: String,
+  //   default:
+  //     "https://res.cloudinary.com/artistree/image/upload/v1590111521/artistree/defaultimage2_t4vr0n.png",
+  // },
   members: [{ type: Schema.Types.ObjectId, ref: "User" }],
   categories: [String],
-  privateOrPublic: {
+  visibility: {
     type: String,
     enum: ["public", "private"],
   },
