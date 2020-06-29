@@ -8,7 +8,10 @@ const userSchema = new Schema(
       default:
         "https://res.cloudinary.com/artistree/image/upload/v1590111521/artistree/defaultimage2_t4vr0n.png",
     },
-    displayName: String,
+    displayName: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: true,
