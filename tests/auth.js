@@ -55,9 +55,18 @@ describe("POST /users/register", function () {
         });
     });
 
-    // it("should validate birthDate is a real date", function (done) {
-    //   done();
-    // });
+    it("should validate birthDate is a real date", function (done) {
+      request(app)
+        .post("/users/register")
+        .send({ ...testUser1Credentials, birthDate: "092" })
+        .expect(422, {
+          message: "Invalid birth date",
+        })
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
   });
 
   // afterEach(deleteUser(testUser1Credentials));
