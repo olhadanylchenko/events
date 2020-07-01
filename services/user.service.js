@@ -12,6 +12,11 @@ module.exports = {
   delete: _delete,
 };
 
+function validateEmail(email) {
+  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+
 async function authenticate({ email, password }) {
   const user = await User.findOne({ email });
   if (user && bcrypt.compareSync(password, user.password)) {
@@ -44,6 +49,12 @@ async function create(userParam) {
       throw {
         status: 422,
         message: "Password must be at least 8 characters long",
+      };
+    }
+    if (!validateEmail(userParam.email)) {
+      throw {
+        status: 422,
+        message: "Invalid email",
       };
     }
     if (await User.findOne({ email: userParam.email })) {
