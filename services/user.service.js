@@ -17,6 +17,14 @@ function validateEmail(email) {
   return re.test(email);
 }
 
+function validateDate(date) {
+  console.log(date);
+
+  const today = new Date();
+  const result = new Date(date) < today;
+  return result;
+}
+
 async function authenticate({ email, password }) {
   const user = await User.findOne({ email });
   if (user && bcrypt.compareSync(password, user.password)) {
@@ -55,6 +63,12 @@ async function create(userParam) {
       throw {
         status: 422,
         message: "Invalid email",
+      };
+    }
+    if (!validateDate(userParam.birthDate)) {
+      throw {
+        status: 422,
+        message: "Invalid birth date",
       };
     }
     if (await User.findOne({ email: userParam.email })) {

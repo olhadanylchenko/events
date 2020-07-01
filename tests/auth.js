@@ -58,7 +58,7 @@ describe("POST /users/register", function () {
     it("should validate birthDate is a real date", function (done) {
       request(app)
         .post("/users/register")
-        .send({ ...testUser1Credentials, birthDate: "092" })
+        .send({ ...testUser1Credentials, birthDate: "butts" })
         .expect(422, {
           message: "Invalid birth date",
         })
