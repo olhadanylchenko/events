@@ -1,69 +1,125 @@
 const app = require("../app");
 //const request = require("supertest");
-var request = require("supertest")(app);
+var request = require("supertest");
 const should = require("should");
 const chai = require("chai");
-const { set } = require("../app");
-const { post } = require("superagent");
 
-const testUserCredentials = {
+const testUser1Credentials = {
   displayName: "Test Olia",
-  email: "user-test1@gmail.com",
+  email: "user-test2@gmail.com",
+  password: "12345678",
+  birthDate: "03-06-1994",
+};
+
+const testUser2Credentials = {
+  displayName: "Test Spencer",
+  email: "user-test4@gmail.com",
   password: "12345678",
   birthDate: "03-06-1994",
 };
 
 describe("POST /users/register", function () {
-  before(deleteUser());
+  describe("validation", function () {
+    it("should validate all required fields", function (done) {
+      request(app)
+        .post("/users/register")
+        .send({})
+        .expect(400, { message: "All required fields should be filled out" })
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
+    it("should validate password length >7 characters", function (done) {
+      request(app)
+        .post("/users/register")
+        .send({ ...testUser1Credentials, password: "1234567" })
+        .expect(422, {
+          message: "Password must be at least 8 characters long",
+        })
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
+    it("should validate email is a real email", function (done) {
+      request(app)
+        .post("/users/register")
+        .send({ ...testUser1Credentials, email: "olia" })
+        .expect(422, {
+          message: "Invalid email",
+        })
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
 
-  it("should validate all required fields", function (done) {
-    request.post("/users/register").send({}).expect();
-    done();
+    // it("should validate birthDate is a real date", function (done) {
+    //   done();
+    // });
   });
 
-  it("should check that email is unique", function (done) {
-    done();
-  });
-  it("should validate password length >7 characters", function (done) {
-    done();
-  });
-  it("should validate email is a real email", function (done) {
-    done();
-  });
-  it("should validate birthDate is a real date", function (done) {
-    done();
-  });
+  // afterEach(deleteUser(testUser1Credentials));
+  // beforeEach(reqisterUser(testUser1Credentials));
+  // describe("smth", function () {
+  //   it("should check that email is unique", function (done) {
+  //     request
+  //       .post("/users/register")
+  //       .send(testUser1Credentials)
+  //       .expect(409, { message: "This email is already taken" })
+  //       .end(function (err, res) {
+  //         if (err) return done(err);
+  //         done();
+  //       });
+  //   });
+  // });
 });
 
-describe("GET /events/mine", function () {
-  it("should require authorization", function (done) {
-    request
-      .get("/events/mine")
-      .expect(401)
-      .end(function (err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
+// describe("GET /events/mine", function () {
+//   it("should require authorization", function (done) {
+//     request
+//       .get("/events/mine")
+//       .expect(401)
+//       .end(function (err, res) {
+//         if (err) return done(err);
+//         done();
+//       });
+//   });
 
-  const auth = {};
-  before(loginUser(auth));
+//   const auth = {};
+//   before(loginUser(auth));
 
-  it("should respond with JSON array", function (done) {
+//   it("should respond with JSON array", function (done) {
+//     request
+//       .get("/events/mine")
+//       .set("Authorization", "Bearer " + auth.token)
+//       .expect(200)
+//       .expect("Content-Type", /json/)
+//       .end(function (err, res) {
+//         if (err) return done(err);
+//         res.body.should.be.instanceof(Array);
+//         done();
+//       });
+//   });
+// });
+
+function reqisterUser(testUserCredentials, auth = {}) {
+  return function (done) {
     request
-      .get("/events/mine")
-      .set("Authorization", "Bearer " + auth.token)
+      .post("/users/register")
+      .send(testUserCredentials)
       .expect(200)
-      .expect("Content-Type", /json/)
-      .end(function (err, res) {
-        if (err) return done(err);
-        res.body.should.be.instanceof(Array);
-        done();
-      });
-  });
-});
+      .end(onResponse);
 
-function loginUser(auth) {
+    function onResponse(err, res) {
+      auth.token = res.body.token;
+      return done();
+    }
+  };
+}
+
+function loginUser(testUserCredentials, auth) {
   return function (done) {
     request
       .post("/users/authenticate")
@@ -78,16 +134,16 @@ function loginUser(auth) {
   };
 }
 
-function deleteUser() {
+function deleteUser(testUserCredentials) {
   return function (done) {
     request
       .post("/users/authenticate")
-      .send(userCredentials)
+      .send(testUserCredentials)
       .expect(200)
       .end(function (err, res) {
         request
-          .delete(`/users/${res._id}`)
-          .expect(200)
+          .delete(`/users/${res.body._id}`)
+          .set("Authorization", "Bearer " + res.body.token)
           .end(function (err, res) {
             return done();
           });

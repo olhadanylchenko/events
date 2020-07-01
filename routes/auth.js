@@ -29,7 +29,15 @@ async function register(req, res, next) {
     const user = await userService.create(req.body);
     res.json(user);
   } catch (err) {
-    next(err);
+    console.log(err);
+    if (err.status) {
+      res.status(err.status).json({
+        message: err.message,
+      });
+    } else {
+      console.log(err);
+      res.status(500).json(err);
+    }
   }
 }
 
@@ -72,6 +80,7 @@ async function update(req, res, next) {
 async function _delete(req, res, next) {
   try {
     await userService.delete(req.params.id);
+    console.log("delete!");
     res.json({});
   } catch (err) {
     next(err);

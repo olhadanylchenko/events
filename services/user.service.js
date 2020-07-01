@@ -34,14 +34,33 @@ async function getById(id) {
 
 async function create(userParam) {
   // validate
-  if (await User.findOne({ email: userParam.email })) {
-    throw "This email is already taken";
+  if (
+    "password" in userParam &&
+    "email" in userParam &&
+    "birthDate" in userParam &&
+    "displayName" in userParam
+  ) {
+    if (userParam.password.length < 8) {
+      throw {
+        status: 422,
+        message: "Password must be at least 8 characters long",
+      };
+    }
+    if (await User.findOne({ email: userParam.email })) {
+      throw { status: 409, message: "This email is already taken" };
+    }
+  } else {
+    throw {
+      status: 400,
+      message: "All required fields should be filled out",
+    };
   }
 
   const user = await User.create({
     password: bcrypt.hashSync(userParam.password),
     email: userParam.email,
     birthDate: userParam.birthDate,
+    displayName: userParam.displayName,
   });
 
   return user;
