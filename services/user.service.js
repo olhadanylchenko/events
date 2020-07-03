@@ -70,12 +70,12 @@ async function create(userParam) {
         message: "Invalid birth date",
       };
     }
-    // if (!isUrlSafe(userParam.username)) {
-    //   throw {
-    //     status: 422,
-    //     message: "Invalid username",
-    //   };
-    // }
+    if (!isUrlSafe(userParam.username)) {
+      throw {
+        status: 422,
+        message: "Invalid username",
+      };
+    }
     if (await User.findOne({ email: userParam.email })) {
       throw { status: 409, message: "This email is already taken" };
     }

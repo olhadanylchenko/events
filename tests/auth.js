@@ -66,6 +66,16 @@ describe("POST /users/register", function () {
           done();
         });
     });
+    it("should validate username is urlSafe", function (done) {
+      request
+        .post("/users/register")
+        .send({ ...testUser1Credentials, username: "    ??" })
+        .expect(422, { message: "Invalid username" })
+        .end((err) => {
+          if (err) return done(err);
+          done();
+        });
+    });
   });
 
   describe("smth", function () {
