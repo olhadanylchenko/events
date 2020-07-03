@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
 
-const isUrlSafe = (string) => /^[a-zA-Z0-9_-]*$/.test(string);
 module.exports = {
   authenticate,
   getAll,
@@ -13,18 +12,17 @@ module.exports = {
   delete: _delete,
 };
 
-function validateEmail(email) {
+const isUrlSafe = (string) => /^[a-zA-Z0-9_-]*$/.test(string);
+const validateEmail = (email) => {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
-}
+};
 
-function validateDate(date) {
-  console.log(date);
-
+const validateDate = (date) => {
   const today = new Date();
   const result = new Date(date) < today;
   return result;
-}
+};
 
 async function authenticate({ email, password }) {
   const user = await User.findOne({ email });
@@ -54,7 +52,7 @@ async function create(userParam) {
     "birthDate" in userParam &&
     "username" in userParam
   ) {
-    if (usFerParam.password.length < 8) {
+    if (userParam.password.length < 8) {
       throw {
         status: 422,
         message: "Password must be at least 8 characters long",
@@ -72,8 +70,17 @@ async function create(userParam) {
         message: "Invalid birth date",
       };
     }
+    if (!isUrlSafe(userParam.username)) {
+      throw {
+        status: 422,
+        message: "Invalid username",
+      };
+    }
     if (await User.findOne({ email: userParam.email })) {
       throw { status: 409, message: "This email is already taken" };
+    }
+    if (await User.findOne({ username: userParam.username })) {
+      throw { status: 409, message: "This username is already taken" };
     }
   } else {
     throw {
