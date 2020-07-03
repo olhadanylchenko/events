@@ -8,11 +8,9 @@ const userSchema = new Schema(
       default:
         "https://res.cloudinary.com/artistree/image/upload/v1590111521/artistree/defaultimage2_t4vr0n.png",
     },
-    displayName: {
-      type: String,
-      required: true,
-    },
-    userName: {
+    displayName: String,
+
+    username: {
       type: String,
       required: true,
     },
