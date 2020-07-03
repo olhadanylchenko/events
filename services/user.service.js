@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
 
+const isUrlSafe = (string) => /^[a-zA-Z0-9_-]*$/.test(string);
 module.exports = {
   authenticate,
   getAll,
@@ -51,9 +52,9 @@ async function create(userParam) {
     "password" in userParam &&
     "email" in userParam &&
     "birthDate" in userParam &&
-    "displayName" in userParam
+    "username" in userParam
   ) {
-    if (userParam.password.length < 8) {
+    if (usFerParam.password.length < 8) {
       throw {
         status: 422,
         message: "Password must be at least 8 characters long",
@@ -86,6 +87,7 @@ async function create(userParam) {
     email: userParam.email,
     birthDate: userParam.birthDate,
     displayName: userParam.displayName,
+    username: userParam.username,
   });
 
   return user;
