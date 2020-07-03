@@ -3,19 +3,18 @@ const app = require("../app");
 var request = require("supertest")(app);
 const should = require("should");
 const chai = require("chai");
-
 const testUser1Credentials = {
-  displayName: "Test Olia",
   email: "user-test2@gmail.com",
   password: "12345678",
   birthDate: "03-06-1994",
+  username: "olia",
 };
 
 const testUser2Credentials = {
-  displayName: "Test Spencer",
   email: "user-test4@gmail.com",
   password: "12345678",
   birthDate: "03-06-1994",
+  username: "spencer",
 };
 
 describe("POST /users/register", function () {
@@ -82,9 +81,18 @@ describe("POST /users/register", function () {
           done();
         });
     });
+    it("should check that username is unique", function (done) {
+      request
+        .post("/users/register")
+        .send({ ...testUser1Credentials, email: "kokoko@ko.ko" })
+        .expect(409, { message: "This username is already taken" })
+        .end(function (err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
   });
 });
-
 // describe("GET /events/mine", function () {
 //   it("should require authorization", function (done) {
 //     request
