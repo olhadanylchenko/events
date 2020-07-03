@@ -1,6 +1,6 @@
 const app = require("../app");
 //const request = require("supertest");
-var request = require("supertest");
+var request = require("supertest")(app);
 const should = require("should");
 const chai = require("chai");
 
@@ -21,7 +21,7 @@ const testUser2Credentials = {
 describe("POST /users/register", function () {
   describe("validation", function () {
     it("should validate all required fields", function (done) {
-      request(app)
+      request
         .post("/users/register")
         .send({})
         .expect(400, { message: "All required fields should be filled out" })
@@ -31,7 +31,7 @@ describe("POST /users/register", function () {
         });
     });
     it("should validate password length >7 characters", function (done) {
-      request(app)
+      request
         .post("/users/register")
         .send({ ...testUser1Credentials, password: "1234567" })
         .expect(422, {
@@ -43,7 +43,7 @@ describe("POST /users/register", function () {
         });
     });
     it("should validate email is a real email", function (done) {
-      request(app)
+      request
         .post("/users/register")
         .send({ ...testUser1Credentials, email: "olia" })
         .expect(422, {
@@ -56,7 +56,7 @@ describe("POST /users/register", function () {
     });
 
     it("should validate birthDate is a real date", function (done) {
-      request(app)
+      request
         .post("/users/register")
         .send({ ...testUser1Credentials, birthDate: "butts" })
         .expect(422, {
@@ -69,20 +69,20 @@ describe("POST /users/register", function () {
     });
   });
 
-  // afterEach(deleteUser(testUser1Credentials));
-  // beforeEach(reqisterUser(testUser1Credentials));
-  // describe("smth", function () {
-  //   it("should check that email is unique", function (done) {
-  //     request
-  //       .post("/users/register")
-  //       .send(testUser1Credentials)
-  //       .expect(409, { message: "This email is already taken" })
-  //       .end(function (err, res) {
-  //         if (err) return done(err);
-  //         done();
-  //       });
-  //   });
-  // });
+  describe("smth", function () {
+    beforeEach(reqisterUser(testUser1Credentials));
+    afterEach(deleteUser(testUser1Credentials));
+    it("should check that email is unique", function (done) {
+      request
+        .post("/users/register")
+        .send(testUser1Credentials)
+        .expect(409, { message: "This email is already taken" })
+        .end(function (err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
 });
 
 // describe("GET /events/mine", function () {
