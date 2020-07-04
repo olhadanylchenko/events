@@ -102,7 +102,21 @@ describe("POST /users/register", function () {
         });
     });
   });
+  describe("valid registration", function () {
+    after(deleteUser(testUser1Credentials));
+    it("should create a user with valid credentials", function (done) {
+      request
+        .post("/user/register")
+        .send(testUser1Credentials)
+        .expect(200)
+        .end(function (err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
 });
+
 // describe("GET /events/mine", function () {
 //   it("should require authorization", function (done) {
 //     request
