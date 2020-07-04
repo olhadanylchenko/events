@@ -78,7 +78,7 @@ describe("POST /users/register", function () {
     });
   });
 
-  describe("smth", function () {
+  describe("unique data", function () {
     beforeEach(reqisterUser(testUser1Credentials));
     afterEach(deleteUser(testUser1Credentials));
     it("should check that email is unique", function (done) {
