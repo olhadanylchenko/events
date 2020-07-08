@@ -9,6 +9,7 @@ const testUser1Credentials = {
   birthDate: "03-06-1994",
   username: "olia",
 };
+const { reqisterUser, loginUser, deleteUser } = require("./utils");
 
 const testUser2Credentials = {
   email: "user-test4@gmail.com",
@@ -106,7 +107,7 @@ describe("POST /users/register", function () {
     after(deleteUser(testUser1Credentials));
     it("should create a user with valid credentials", function (done) {
       request
-        .post("/user/register")
+        .post("/users/register")
         .send(testUser1Credentials)
         .expect(200)
         .end(function (err, res) {
@@ -116,78 +117,3 @@ describe("POST /users/register", function () {
     });
   });
 });
-
-// describe("GET /events/mine", function () {
-//   it("should require authorization", function (done) {
-//     request
-//       .get("/events/mine")
-//       .expect(401)
-//       .end(function (err, res) {
-//         if (err) return done(err);
-//         done();
-//       });
-//   });
-
-//   const auth = {};
-//   before(loginUser(auth));
-
-//   it("should respond with JSON array", function (done) {
-//     request
-//       .get("/events/mine")
-//       .set("Authorization", "Bearer " + auth.token)
-//       .expect(200)
-//       .expect("Content-Type", /json/)
-//       .end(function (err, res) {
-//         if (err) return done(err);
-//         res.body.should.be.instanceof(Array);
-//         done();
-//       });
-//   });
-// });
-
-function reqisterUser(testUserCredentials, auth = {}) {
-  return function (done) {
-    request
-      .post("/users/register")
-      .send(testUserCredentials)
-      .expect(200)
-      .end(onResponse);
-
-    function onResponse(err, res) {
-      auth.token = res.body.token;
-      return done();
-    }
-  };
-}
-
-function loginUser(testUserCredentials, auth) {
-  return function (done) {
-    request
-      .post("/users/authenticate")
-      .send(testUserCredentials)
-      .expect(200)
-      .end(onResponse);
-
-    function onResponse(err, res) {
-      auth.token = res.body.token;
-      return done();
-    }
-  };
-}
-
-function deleteUser(testUserCredentials) {
-  return function (done) {
-    request
-      .post("/users/authenticate")
-      .send(testUserCredentials)
-      .expect(200)
-      .end(function (err, res) {
-        request
-          .delete(`/users/${res.body._id}`)
-          .set("Authorization", "Bearer " + res.body.token)
-          .end(function (err, res) {
-            return done();
-          });
-      });
-  };
-}
