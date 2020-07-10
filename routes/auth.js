@@ -15,6 +15,7 @@ module.exports = router;
 
 async function authenticate(req, res, next) {
   try {
+    console.log("fucking got to this point");
     const user = await userService.authenticate(req.body);
     user
       ? res.json(user)

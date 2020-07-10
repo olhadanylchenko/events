@@ -18,9 +18,9 @@ app.use(jwt());
 app.use(errorHandler);
 
 // api routes
-app.use("/users", users);
-app.use("/friendships", friendships);
-app.use("/events", events);
+app.use("/api/users", users);
+app.use("/api/friendships", friendships);
+app.use("/api/events", events);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 });
 
 // start server
-const port = process.env.NODE_ENV === "production" ? 80 : 4000;
+const port = process.env.NODE_ENV === "production" ? 80 : 5555;
 app.listen(port, function () {
   console.log("Server listening on port " + port);
 });
