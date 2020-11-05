@@ -4,7 +4,7 @@ var request = require("supertest")(app);
 function reqisterUser(testUserCredentials, auth = {}) {
   return function (done) {
     request
-      .post("/users/register")
+      .post("/api/users/register")
       .send(testUserCredentials)
       .expect(200)
       .end(onResponse);
@@ -19,7 +19,7 @@ function reqisterUser(testUserCredentials, auth = {}) {
 function loginUser(testUserCredentials, auth) {
   return function (done) {
     request
-      .post("/users/authenticate")
+      .post("/api/users/authenticate")
       .send(testUserCredentials)
       .expect(200)
       .end(onResponse);
@@ -34,16 +34,20 @@ function loginUser(testUserCredentials, auth) {
 function deleteUser(testUserCredentials) {
   return function (done) {
     request
-      .post("/users/authenticate")
+      .post("/api/users/authenticate")
       .send(testUserCredentials)
       .expect(200)
       .end(function (err, res) {
-        request
-          .delete(`/users/${res.body._id}`)
-          .set("Authorization", "Bearer " + res.body.token)
-          .end(function (err, res) {
-            return done();
-          });
+        if (res.body._id) {
+          request
+            .delete(`/api/users/${res.body._id}`)
+            .set("Authorization", "Bearer " + res.body.token)
+            .end(function (err, res) {
+              return done();
+            });
+        } else {
+          done();
+        }
       });
   };
 }

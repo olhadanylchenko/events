@@ -15,7 +15,7 @@ describe("GET /events/mine", function () {
   describe("authorisation", function () {
     it("should require authorization", function (done) {
       request
-        .get("/events/mine")
+        .get("/api/events/mine")
         .expect(401)
         .end(function (err, res) {
           if (err) return done(err);
@@ -29,11 +29,9 @@ describe("GET /events/mine", function () {
     before(reqisterUser(testUser1Credentials));
     before(loginUser(testUser1Credentials, auth));
     after(deleteUser(testUser1Credentials));
-    //console.log("YOYOYOYO", auth);
     it("should respond with JSON array", function (done) {
-      console.log(auth);
       request
-        .get("/events/mine")
+        .get("/api/events/mine")
         .set("Authorization", "Bearer " + auth.token)
         .expect(200)
         .expect("Content-Type", /json/)
