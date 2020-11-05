@@ -1,12 +1,13 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import "./components/Login";
+import React, { useState, useEffect } from 'react';
 import { Route, Switch } from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import './App.css';
 
-function App() {
+interface AppProps {}
+
+function App({}: AppProps) {
+  
   return (
     <Switch>
       <Route exact path="/signup" component={Signup}></Route>
