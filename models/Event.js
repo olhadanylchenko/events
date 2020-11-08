@@ -10,6 +10,9 @@ const eventSchema = new Schema({
   hostModel: {
     enum: ["User", "Organisation"],
   },
+  language: {
+    enum: ["Arabic", "English", "German", "Turkish", "Ukrainian"],
+  },
   title: {
     type: String,
     required: true,
